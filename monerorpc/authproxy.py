@@ -254,11 +254,13 @@ class AuthServiceProxy(object):
         except (json.JSONDecodeError) as e:
             raise ValueError(f"Error: '{str(e)}'. Response: '{http_response}'.")
 
-        if "error" in response and response.get("error", None) is None:
-            log.error(f"Error: '{response}'")
-            log.debug(
-                f"<-{response['id']}- {json.dumps(response['result'], default=EncodeDecimal)}"
-            )
+        if "error" in response:
+            if response.get("error", None) is None:
+                log.debug(
+                    f"<-{response['id']}- {json.dumps(response['result'], default=EncodeDecimal)}"
+                )
+            else:
+                log.error(f"Error: '{response}'")
         else:
             log.debug(f"<-- {response}")
         return response
