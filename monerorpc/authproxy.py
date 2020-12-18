@@ -157,7 +157,9 @@ class AuthServiceProxy(object):
         if self.__service_name is not None:
             name = f"{self.__service_name}.{name}"
         return AuthServiceProxy(
-            service_url=self.__service_url, service_name=name, connection=self.__conn,
+            service_url=self.__service_url,
+            service_name=name,
+            connection=self.__conn,
         )
 
     def __call__(self, *args):
@@ -192,17 +194,21 @@ class AuthServiceProxy(object):
 
     def batch_(self, rpc_calls):
         """Batch RPC call.
-           Pass array of arrays: [ [ "method", params... ], ... ]
-           Returns array of results.
+        Pass array of arrays: [ [ "method", params... ], ... ]
+        Returns array of results.
 
-           No real implementation of JSON RPC batch.
-           Only requesting every method one after another.
+        No real implementation of JSON RPC batch.
+        Only requesting every method one after another.
         """
-        results = list()
+        results = []
         for rpc_call in rpc_calls:
             method = rpc_call.pop(0)
-            params = rpc_call.pop(0) if rpc_call else dict()
-            results.append(self.__getattr__(method)(params))
+            params = rpc_call.pop(0) if rpc_call else {}
+            try:
+                results.append(self.__getattr__(method)(params))
+            except (JSONRPCException) as e:
+                log.error(f"Error: '{str(e)}'.")
+                results.append(None)
 
         return results
 

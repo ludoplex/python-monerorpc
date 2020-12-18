@@ -48,7 +48,10 @@ class TestAuthServiceProxy:
     @responses.activate
     def test_rpc_error_raises_error(self):
         responses.add(
-            responses.POST, self.dummy_url, status=200, json={"error": "dummy error"},
+            responses.POST,
+            self.dummy_url,
+            status=200,
+            json={"error": "dummy error"},
         )
         client = AuthServiceProxy(self.dummy_url)
         with pytest.raises(JSONRPCException):
@@ -56,8 +59,7 @@ class TestAuthServiceProxy:
 
     @responses.activate
     def test_connection_error(self):
-        """Mock no connection to server error.
-        """
+        """Mock no connection to server error."""
         responses.add(responses.POST, self.dummy_url, body=ConnectionError(""))
         client = AuthServiceProxy(self.dummy_url)
         with pytest.raises(JSONRPCException):
@@ -65,8 +67,7 @@ class TestAuthServiceProxy:
 
     @responses.activate
     def test_timeout_error(self):
-        """Mock timeout connecting to server.
-        """
+        """Mock timeout connecting to server."""
         responses.add(responses.POST, self.dummy_url, body=Timeout(""))
         client = AuthServiceProxy(self.dummy_url)
         with pytest.raises(JSONRPCException):
@@ -74,8 +75,7 @@ class TestAuthServiceProxy:
 
     @responses.activate
     def test_jsondecode_request_error(self):
-        """Mock JSONDecodeError when trying to get JSON form response.
-        """
+        """Mock JSONDecodeError when trying to get JSON form response."""
         responses.add(responses.POST, self.dummy_url, body=RequestException(""))
         client = AuthServiceProxy(self.dummy_url)
         with pytest.raises(JSONRPCException):
@@ -83,8 +83,7 @@ class TestAuthServiceProxy:
 
     @responses.activate
     def test_other_request_error(self):
-        """Mock other errors connecting to server.
-        """
+        """Mock other errors connecting to server."""
         responses.add(responses.POST, self.dummy_url, body="<html></html>")
         client = AuthServiceProxy(self.dummy_url)
         with pytest.raises(ValueError):
