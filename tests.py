@@ -96,7 +96,7 @@ class TestAuthServiceProxy:
                 responses.POST,
                 self.dummy_url,
                 status=200,
-                json={"result": "dummy - {}".format(n)},
+                json={"result": f"dummy - {n}"},
             )
         client = AuthServiceProxy(self.dummy_url)
         cases = [["dummy_method_1", {}], ["dummy_method_2", "dummy"]]
